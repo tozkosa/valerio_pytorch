@@ -2,8 +2,11 @@ import os
 import json
 import torchaudio
 import matplotlib.pyplot as plt
+import pandas as pd
 
-DATA_ROOT = "D:\daon_data\\nagoya_20210727_cutout_5ms"
+
+# DATA_ROOT = "D:\daon_data\\nagoya_20210727_cutout_5ms" # home
+DATA_ROOT = "/home/tozeki/daon/nagoya_20210727_cutout_5ms"
 JSON_PATH = "data.json"
 
 
