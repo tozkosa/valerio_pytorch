@@ -23,8 +23,6 @@ class Autoencoder_CNN(nn.Module):
             nn.ConvTranspose2d(32, 16, 3, stride=2, padding=1, output_padding=1),
             nn.ReLU(),
             nn.ConvTranspose2d(16, 1, 3, stride=2, padding=1, output_padding=1),
-            nn.ReLU(),
-            nn.Linear(128, 28*28),
             nn.Sigmoid()
         )
 
@@ -47,7 +45,7 @@ if __name__ == "__main__":
                                 )
 
     data_loader = torch.utils.data.DataLoader(dataset=mnist_data,
-                                              batch_size=8,
+                                              batch_size=4,
                                               shuffle=True)
 
     # This is to check image data.
