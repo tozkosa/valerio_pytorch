@@ -29,7 +29,7 @@ def load_audio_files(place, train_test, hammer='small'):
 
 
 if __name__ == "__main__":
-    X, sr = load_audio_files('wall_member_50cm_thick', 'train', 'small')
+    X, sr = load_audio_files('crack_1', 'train', 'small')
     wavlist = pywt.wavelist(kind='continuous')
     # print(wavlist)
     wavelet_type = 'cmor1.5-1.0'  # 'cmor1.5-1.0'
@@ -64,20 +64,13 @@ if __name__ == "__main__":
         signal = X[i]
         cwtmatr, freqs_rate = pywt.cwt(signal, scales=scales, wavelet=wavelet_type)
         # print(cwtmatr.shape)
+        # plt.subplot(1, 5, i)
         plt.figure()
-        plt.imshow(np.abs(cwtmatr), aspect='auto')
+        plt.imshow(np.log10(np.abs(cwtmatr)), aspect='auto')
 
     plt.show()
     plt.close()
-    # scale = np.arange(1, 1025) # 257
-    # signal = X[2]
-    # coef, _ = pywt.cwt(signal, scales=scale, wavelet=wavelet_type)
-    # t = np.arange(len(signal))/sr
-    # frq = pywt.scale2frequency(scale=scale, wavelet=wavelet_type)*sr
-    # plt.pcolormesh(t, frq, 10*np.log(np.abs(coef)), cmap='jet')
-    # plt.colorbar()
-    # plt.show()
-    # plt.close()
+
 
 
 
