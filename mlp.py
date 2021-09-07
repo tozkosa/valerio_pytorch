@@ -55,12 +55,24 @@ def train(dataloader, model, loss_fn, optimizer):
     return loss_batch, train_acc
 
 
-def make_annotation_train(place, train_test, hammer='small'):
+def test(dataloader, model):
+    size = len(dataloader.dataset)
+    print(size)
+    model.eval()
+
+    with torch.no_grad():
+        for X, _ in dataloader:
+            X = X.to(device)
+            pred = model(X)
+    return pred
+
+
+def make_annotation_train_test(place, train_test, hammer, file_name):
     df = pd.read_csv("../annotations_home_linux.csv")
     df2 = df[(df['place'] == place) & (df['train_test'] == train_test) & (df['hammer_type'] == hammer)]
-    df3 = df2.reset_index()
-    df4 = df3[['path', 'file_name', 'label']]
-    df4.to_csv('../train_home.csv', encoding='utf-8')
+    # df3 = df2.reset_index()
+    df4 = df2[['path', 'file_name', 'label']]
+    df4.to_csv(file_name, encoding='utf-8')
 
 
 class ImpactEchoDataset(Dataset):
@@ -79,7 +91,8 @@ class ImpactEchoDataset(Dataset):
         # print("inside getitem")
         audio_sample_path = self._get_audio_sample_path(index)
         label_ = self.annotations.iloc[index, -1]
-        label_ = self.classes.index(label_)
+        if label_ in classes:
+            label_ = self.classes.index(label_)
         # label_dict = {'normal': torch.tensor([[0.]]), 'defect': torch.tensor([[1.]])}
         signal_, sr = torchaudio.load(audio_sample_path)
         signal_ = signal_.view(-1)
@@ -100,8 +113,12 @@ if __name__ == "__main__":
     print(f"Using {device} device")
 
     classes = ['normal', 'defect']
-    make_annotation_train('crack_1', 'train')
-    training_data = ImpactEchoDataset('../train_home.csv', classes=classes)
+    file_train = '../train.csv'
+    file_test = '../test.csv'
+    make_annotation_train_test('crack_1', 'train', 'small', file_train)
+    make_annotation_train_test('crack_1', 'test', 'small', file_test)
+    training_data = ImpactEchoDataset(file_train, classes=classes)
+    test_data = ImpactEchoDataset(file_test, classes=classes)
     print(f"There are {len(training_data)} samples in the dataset.")
 
     signal, label = training_data[40]
@@ -112,6 +129,7 @@ if __name__ == "__main__":
     print(classes[label])
 
     train_dataloader = DataLoader(training_data, batch_size=64, shuffle=True)
+    test_dataloader = DataLoader(test_data, batch_size=940, shuffle=False)
 
     for X, y in train_dataloader:
         print(f"Shape of X: {X.shape}")
@@ -125,7 +143,7 @@ if __name__ == "__main__":
     loss = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-    epochs = 50
+    epochs = 5
     train_loss_list = []
     train_acc_list = []
     for t in range(epochs):
@@ -134,6 +152,14 @@ if __name__ == "__main__":
         print(f"loss {loss_batch:>7f} train_acc: {train_acc:7>f}")
         train_loss_list.append(loss_batch)
         train_acc_list.append(train_acc)
+
+    predictions = test(test_dataloader, model)
+    print(predictions.shape)
+    print(predictions.argmax(1))
+    # for i, label in enumerate(predictions):
+    #     print(label)
+    #     max, index = torch.max(label)
+    #     print(index)
 
     plt.figure()
     plt.plot(range(1, epochs+1), train_loss_list)
