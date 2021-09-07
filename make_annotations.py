@@ -22,10 +22,11 @@ def list_of_dirs(data_root):
         print(f"Number of directories: {len(dirs)}")
         print(f"Number of files: {len(files)}")
         if len(files) != 0:
-            for file in files:
+            for file in sorted(files):
+                print(file)
                 if file.endswith(".wav"):
                     dir_split = curDir.split("/")
-                    print(f"length: {len(dir_split)}")
+                    # print(f"length: {len(dir_split)}")
                     list1.append(curDir)
                     list2.append(file)
                     list3.append(dir_split[6])
@@ -44,6 +45,7 @@ def list_of_dirs(data_root):
     data = {'path': list1, 'file_name': list2, 'place': list3, 'train_test': list4,
             'hammer_type': list5, 'label': list6}
     df = pd.DataFrame(data)
+    print(df)
     df.to_csv('../annotations_home_linux.csv', encoding='utf-8')
     # df2 = df[df['place'] == 'crack_1']
     # df2.to_csv('crack_1.csv')

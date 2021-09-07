@@ -116,7 +116,7 @@ if __name__ == "__main__":
     file_train = '../train.csv'
     file_test = '../test.csv'
     make_annotation_train_test('crack_1', 'train', 'small', file_train)
-    make_annotation_train_test('crack_1', 'test', 'small', file_test)
+    make_annotation_train_test('crack_2', 'test', 'small', file_test)
     training_data = ImpactEchoDataset(file_train, classes=classes)
     test_data = ImpactEchoDataset(file_test, classes=classes)
     print(f"There are {len(training_data)} samples in the dataset.")
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     print(classes[label])
 
     train_dataloader = DataLoader(training_data, batch_size=64, shuffle=True)
-    test_dataloader = DataLoader(test_data, batch_size=940, shuffle=False)
+    test_dataloader = DataLoader(test_data, batch_size=958, shuffle=False)
 
     for X, y in train_dataloader:
         print(f"Shape of X: {X.shape}")
@@ -155,7 +155,14 @@ if __name__ == "__main__":
 
     predictions = test(test_dataloader, model)
     print(predictions.shape)
-    print(predictions.argmax(1))
+    predicted = predictions.argmax(1).cpu().numpy()
+    print(predicted.shape)
+    df = pd.read_csv("../test.csv")
+    # df['label'] = predictions.argmax(1).cpu()
+    df['label'] = predicted
+    # print(df)
+    df.to_csv('../testlabel.csv')
+
     # for i, label in enumerate(predictions):
     #     print(label)
     #     max, index = torch.max(label)

@@ -36,7 +36,7 @@ if __name__ == "__main__":
     # print(clf.predict(X))
     # print(clf.score_samples(X))
 
-    df = pd.read_csv("annotations.csv")
+    df = pd.read_csv("../annotations_home_linux.csv")
     df2 = df[df['place'] == 'crack_2']
     df3 = df2[df2['train_test'] == 'test']
 
@@ -66,8 +66,8 @@ if __name__ == "__main__":
     print(len(X[0]))
 
     """Principal Component Analysis"""
-    # pca = PCA(n_components=10)
-    # X_scaled = pca.fit_transform(X)
+    pca = PCA(n_components=10)
+    X_scaled = pca.fit_transform(X)
 
     """One Class SVM"""
     clf = OneClassSVM(gamma='scale').fit(X_scaled)
@@ -78,7 +78,7 @@ if __name__ == "__main__":
     print(Y2)
     df3['score'] = list(Y2)
     #
-    df3.to_csv('oneclass.csv')
+    df3.to_csv('../oneclass.csv')
 
 
 
