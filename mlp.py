@@ -68,7 +68,7 @@ def test(dataloader, model):
 
 
 def make_annotation_train_test(place, train_test, hammer, file_name):
-    df = pd.read_csv("../annotations_home_linux.csv")
+    df = pd.read_csv("../annotations_linux.csv")
     df2 = df[(df['place'] == place) & (df['train_test'] == train_test) & (df['hammer_type'] == hammer)]
     # df3 = df2.reset_index()
     df4 = df2[['path', 'file_name', 'label']]
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     print(f"There are {len(training_data)} samples in the dataset.")
 
     signal, label = training_data[40]
-    input_neurons = 481
+    input_neurons = len(signal)
     print(f"number of input neurons: {input_neurons}")
     # print(label.dtype)
     print(label)

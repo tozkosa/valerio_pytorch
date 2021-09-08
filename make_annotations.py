@@ -2,8 +2,8 @@ import os
 import pandas as pd
 
 # DATA_ROOT = "D:\daon_data\\nagoya_20210727_cutout_5ms"
-DATA_ROOT = "/home/tomoko/daon/nagoya2021/nagoya_20210727_cutout_5ms/" # home linux
-# DATA_ROOT = "/home/tozeki/daon/nagoya2021/nagoya_20210727_cutout_5ms/" # 大学PC
+# DATA_ROOT = "/home/tomoko/daon/nagoya2021/nagoya_20210727_cutout_5ms/" # home linux
+DATA_ROOT = "/home/tozeki/daon/nagoya2021/nagoya_20210727_cutout_5ms/" # 大学PC
 
 
 def list_of_dirs(data_root):
@@ -46,7 +46,7 @@ def list_of_dirs(data_root):
             'hammer_type': list5, 'label': list6}
     df = pd.DataFrame(data)
     print(df)
-    df.to_csv('../annotations_home_linux.csv', encoding='utf-8')
+    df.to_csv('../annotations_linux.csv', encoding='utf-8')
     # df2 = df[df['place'] == 'crack_1']
     # df2.to_csv('crack_1.csv')
 
