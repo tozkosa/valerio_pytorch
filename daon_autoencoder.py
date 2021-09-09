@@ -61,7 +61,7 @@ if __name__ == "__main__":
     model = AutoEncoder().to(device)
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-5)
-    print(model)
+    # print(model)
 
     num_epochs = 20
     outputs = []
@@ -87,13 +87,15 @@ if __name__ == "__main__":
             if i >= 9:
                 break
             plt.subplot(2, 9, i+1)
-            item = item.reshape(-1, 13, 37)
-            plt.imshow(item[0])
+            item = item.reshape(13, 37)
+            plt.imshow(item)
+            plt.axis('off')
 
         for i, item in enumerate(recon):
             if i >= 9:
                 break
             plt.subplot(2, 9, 9+i+1)
-            item = item.reshape(-1, 13, 37)
-            plt.imshow(item[0])
+            item = item.reshape(13, 37)
+            plt.imshow(item)
+            plt.axis('off')
     plt.show()

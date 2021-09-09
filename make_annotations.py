@@ -2,8 +2,8 @@ import os
 import pandas as pd
 
 # DATA_ROOT = "D:\daon_data\\nagoya_20210727_cutout_5ms"
-# DATA_ROOT = "/home/tomoko/daon/nagoya2021/nagoya_20210727_cutout_5ms/" # home linux
-DATA_ROOT = "/home/tozeki/daon/nagoya2021/nagoya_20210727_cutout_5ms/" # 大学PC
+DATA_ROOT = "/home/tomoko/daon/nagoya2021/nagoya_20210727_cutout_5ms/" # home linux
+# DATA_ROOT = "/home/tozeki/daon/nagoya2021/nagoya_20210727_cutout_5ms/" # 大学PC
 
 
 def list_of_dirs(data_root):
