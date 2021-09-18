@@ -4,6 +4,9 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 import matplotlib.pyplot as plt
 from daon_dataset import *
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.colors as mcolors
 
 
 class AutoEncoder(nn.Module):
@@ -18,11 +21,11 @@ class AutoEncoder(nn.Module):
             nn.ReLU(),
             nn.Linear(64, 12),
             nn.ReLU(),
-            nn.Linear(12, 3)
+            nn.Linear(12, 2)
         )
 
         self.decoder = nn.Sequential(
-            nn.Linear(3, 12),
+            nn.Linear(2, 12),
             nn.ReLU(),
             nn.Linear(12, 64),
             nn.ReLU(),
@@ -66,7 +69,7 @@ if __name__ == "__main__":
     num_epochs = 20
     outputs = []
     for epoch in range(num_epochs):
-        for (echo, _) in data_loader:
+        for (echo, label) in data_loader:
             echo = echo.to(device)
             recon = model(echo)
             loss = criterion(recon, echo)
@@ -76,7 +79,67 @@ if __name__ == "__main__":
             optimizer.step()
 
         print(f"Epoch:{epoch+1}, Loss:{loss.item():.4f}")
-        outputs.append((epoch, echo, recon))
+        outputs.append((epoch, echo, recon, label))
+
+    # save the reconstructed sounds
+    recon_wave = outputs[-1][2].detach().cpu()
+    recon_label = outputs[-1][3].detach().cpu().numpy()
+    # data_labels = [classes[i] for i in recon_label]
+    # print(recon_label)
+    # print(data_labels)
+    # print(recon_wave.shape)
+
+    model.eval()
+    for i, (echo, label) in enumerate(data_loader):
+        echo = echo.to(device)
+        latent_variables = model.encoder(echo)
+        class_labels = label
+
+    x = class_labels.numpy()
+    print(f"label's shape: {x.shape}")
+
+    colors = list(mcolors.BASE_COLORS.keys())
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection='3d')
+    # print(f"latent_variables shape: {latent_variables.shape}")
+    # for i, la in enumerate(latent_variables):
+    #     la = la.detach().cpu().numpy()
+    #     print(la)
+    #     # print(class_labels[i])
+    #     ax.scatter(la[0], la[1], la[2], c=colors[x[i]])
+
+    plt.figure()
+    print(f"latent_variables shape: {latent_variables.shape}")
+    for i, la in enumerate(latent_variables):
+        la = la.detach().cpu().numpy()
+        # print(la)
+        # print(class_labels[i])
+        # plt.scatter(la[0], la[1], c=colors[x[i]])
+        plt.scatter(la[0], la[1])
+
+    # for i, latent_d in enumerate(latent_variables):
+    #     latent_d = latent_d.detach().cpu().numpy()
+    #     label_d = class_labels[i]
+    #     print(label_d.shape)
+    #     # ax.scatter(latent_d[0], latent_d[1],
+    #     #            latent_d[2], c=colors[label_d])
+
+    # for i, item in enumerate(recon_wave):
+    #     path = f"save_wav_test_{i+1}.wav"
+    #     audio_data = item[np.newaxis, :]
+    #     # print(item.shape)
+    #     # print(audio_data.shape)
+    #     torchaudio.save(path,
+    #                     audio_data,
+    #                     96000,
+    #                     encoding="PCM_S", bits_per_sample=24)
+    #
+    path = "save_wav_test.wav"
+    torchaudio.save(path,
+                    outputs[-1][2].detach().cpu(),
+                    96000,
+                    encoding="PCM_S", bits_per_sample=24)
+
 
     for k in range(0, num_epochs, 8):
         plt.figure(figsize=(9, 2))
@@ -98,4 +161,5 @@ if __name__ == "__main__":
             item = item.reshape(13, 37)
             plt.imshow(item)
             plt.axis('off')
+
     plt.show()
